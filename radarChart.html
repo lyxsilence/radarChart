@@ -3,31 +3,111 @@
 <head>
     <title>雷达图</title>
     <style type="text/css">
+        * {
+            border: 0;
+            margin: 0;
+            padding: 0;
+        }
+        ::-webkit-scrollbar-thumb {
+            height: 5px;
+            border: 1px solid transparent;
+            border-top: none;
+            border-bottom: none;
+            -webkit-border-radius: 6px;
+            background-color: rgba(0,0,0,.3);
+            background-clip: padding-box;
+        }
+        pre code::-webkit-scrollbar, pre::-webkit-scrollbar {
+            width: 3px!important;
+            height: 3px!important;
+            -webkit-appearance: none;
+        }
         body {
             font-size: 16px;
             font-family: PT Sans, DejaVu Sans, Arial, sans;
         }
+        pre code {
+            overflow-x: auto;
+            border-radius: 4px;
+            padding: 10px;
+            margin-top: -20px;
+            line-height: 1.4;
+            word-wrap: normal;
+            display: block;
+            font-size: 14px;
+            background: #f9f9f9;
+            color: #333;
+            font-family: Menlo,Monaco,Consolas,"Courier New",monospace;
+        }
         .radar {
-            height: 400px;
+            height: 200px;
         }
         .row {
-            width: 100%;
+            display: -webkit-box;
+            display: -ms-flexbox;
+            display: flex;
+            padding: 20px;
             border-bottom: 1px solid #ccc;
-            display: inline-block;
         }
         .row .radar {
-            width: 50%;
-            float: left;
+            width: 300px;
+            margin-right: 20px;
         }
         .row .code {
-            width: 50%;
-            float: left;
+            flex: 1;
+        }
+
+        #radar0 {
+            background-color: #5B5C5F;
         }
 
     </style>
     <link rel="stylesheet" type="text/css" href="radarChart.css">
 </head>
 <body>
+<div class="row">
+    <div id="radar0" class="radar"></div>
+    <div class="code">
+        <pre>
+            <code>
+radarChart.init(document.querySelector("#radar0"), {
+    data: {
+        maxValue: [100, 100, 100, 100, 100, 200],
+        value: [80, 50, 30, 50, 100, 68],
+        description: ["JavaScript", "Java", "CSS", "Python", "Three.js", "Canvas"]
+    },
+    config: {
+        scale: 0.5,
+        dataFill: {
+            fillStyle: "rgba(24, 236, 111, .4)"
+        },
+        bg: {
+            layer: 4,
+            evenFillStyle: "#828282",
+            oddFillStyle: "#828282",
+            evenStrokeStyle: "#ccc",
+            oddStrokeStyle: "#ccc"
+        },
+        dataCircle: {
+            r: 1,
+            strokeStyle: "#18ec6f",
+            fillStyle: "#18ec6f",
+            lineWidth: 0.5
+        },
+        dataLine: {
+            strokeStyle: "#18ec6f",
+            lineWidth: 2
+        },
+        font: {
+            fontColor: "#eee"
+        }
+    }
+});
+            </code>
+        </pre>
+    </div>
+</div>
+
 <div class="row">
     <div id="radar1" class="radar"></div>
     <div class="code">
@@ -36,14 +116,17 @@
 radarChart.init(document.querySelector("#radar1"), {
     data: {
         maxValue: [100, 100, 100, 100, 100, 200],
-        value: [30, 20, 40, 20, 100, 22],
+        value: [80, 50, 30, 50, 100, 22],
         description: ["第一名", "第二名", "第三名", "第四名", "第五名", "第六名"],
         tooltipsString: function(description, value, maxVlaue) {
             return "排名：" + description + "<br>" + "分数：" + value + "<br>" + "最高分： " + maxVlaue;
         }
     },
     config: {
-        scale: 0.6
+        scale: 0.6,
+        dataFill: {
+            fillStyle: "#6fb08a"
+        }
     }
 });
             </code>
@@ -55,17 +138,32 @@ radarChart.init(document.querySelector("#radar1"), {
     <div class="code">
         <pre>
             <code>
-radarChart.init(document.querySelector("#radar1"), {
+radarChart.init(document.querySelector("#radar2"), {
     data: {
-        maxValue: [100, 100, 100, 100, 100, 200],
-        value: [30, 20, 40, 20, 100, 22],
-        description: ["第一名", "第二名", "第三名", "第四名", "第五名", "第六名"],
-        tooltipsString: function(description, value, maxVlaue) {
-            return "排名：" + description + "<br>" + "分数：" + value + "<br>" + "最高分： " + maxVlaue;
-        }
+        maxValue: [100, 100, 100, 100, 100, 100, 300],
+        value: [30, 20, 40, 70, 100, 60, 250],
+        description: ["苹果", "香蕉", "番茄", "樱桃", "番石榴", "水蜜桃", "梨子"]
     },
     config: {
-        scale: 0.6
+        showTooltip: false,
+        scale: 1,
+        dataLine: {
+            strokeStyle: "yellow",
+            lineWidth: 3
+        },
+        dataCircle: {
+            r: 7,
+            strokeStyle: "yellow",
+            fillStyle: "#eee",
+            lineWidth: 7
+        },
+        bg: {
+            layer: 9,
+            evenFillStyle: "#fefefe",
+            oddFillStyle: "#ddd",
+            evenStrokeStyle: "#999",
+            oddStrokeStyle: "#999"
+        }
     }
 });
             </code>
@@ -91,19 +189,98 @@ radarChart.init(document.querySelector("#radar3"), {
         </pre>
     </div>
 </div>
-<script type="text/javascript" src="radarChart.js"></script>
-<script type="text/javascript">
-radarChart.init(document.querySelector("#radar1"), {
+<div class="row">
+    <div id="radar4" class="radar"></div>
+    <div class="code">
+        <pre>
+            <code>
+radarChart.init(document.querySelector("#radar4"), {
     data: {
         maxValue: [100, 100, 100, 100, 100, 200],
-        value: [30, 20, 40, 20, 100, 22],
+        value: [80, 50, 30, 50, 100, 22],
         description: ["第一名", "第二名", "第三名", "第四名", "第五名", "第六名"],
         tooltipsString: function(description, value, maxVlaue) {
             return "排名：" + description + "<br>" + "分数：" + value + "<br>" + "最高分： " + maxVlaue;
         }
     },
     config: {
-        scale: 0.6
+        scale: 0.6,
+        dataFill: {
+            fillStyle: "#6fb08a"
+        }
+    }
+});
+            </code>
+        </pre>
+    </div>
+</div>
+<script type="text/javascript" src="radarChart.js"></script>
+<script type="text/javascript">
+radarChart.init(document.querySelector("#radar0"), {
+    data: {
+        maxValue: [100, 100, 100, 100, 100],
+        value: [80, 50, 30, 50, 100],
+        description: ["JavaScript", "Java", "CSS", "Python", "Three.js"]
+    },
+    config: {
+        scale: 0.5,
+        dataFill: {
+            fillStyle: "rgba(24, 236, 111, .4)"
+        },
+        bg: {
+            layer: 4,
+            evenFillStyle: "#828282",
+            oddFillStyle: "#828282",
+            evenStrokeStyle: "#ccc",
+            oddStrokeStyle: "#ccc"
+        },
+        dataCircle: {
+            r: 1,
+            strokeStyle: "#18ec6f",
+            fillStyle: "#18ec6f",
+            lineWidth: 0.5
+        },
+        dataLine: {
+            strokeStyle: "#18ec6f",
+            lineWidth: 2
+        },
+        font: {
+            fontColor: "#eee"
+        }
+    }
+});
+
+radarChart.init(document.querySelector("#radar1"), {
+    data: {
+        maxValue: [100, 100, 100, 100, 100, 200],
+        value: [80, 50, 30, 50, 100, 68],
+        description: ["JavaScript", "Java", "CSS", "Python", "Three.js", "Canvas"]
+    },
+    config: {
+        scale: 0.5,
+        dataFill: {
+            fillStyle: "rgba(24, 236, 111, .4)"
+        },
+        bg: {
+            layer: 4,
+            evenFillStyle: "transparent",
+            oddFillStyle: "transparent",
+            evenStrokeStyle: "#dedede",
+            oddStrokeStyle: "#dedede"
+        },
+        dataCircle: {
+            r: 1,
+            strokeStyle: "#18ec6f",
+            fillStyle: "#18ec6f",
+            lineWidth: 0.5
+        },
+        dataLine: {
+            strokeStyle: "#18ec6f",
+            lineWidth: 2
+        },
+        font: {
+            fontColor: "#333"
+        }
     }
 });
 
@@ -116,6 +293,7 @@ radarChart.init(document.querySelector("#radar2"), {
     config: {
         showTooltip: false,
         scale: 1,
+        showTooltip: true,
         dataLine: {
             strokeStyle: "yellow",
             lineWidth: 3
@@ -146,12 +324,29 @@ radarChart.init(document.querySelector("#radar3"), {
         scale: 1
     }
 });
+
+radarChart.init(document.querySelector("#radar4"), {
+    data: {
+        maxValue: [100, 100, 100, 100, 100, 200],
+        value: [80, 50, 30, 50, 100, 22],
+        description: ["第一名", "第二名", "第三名", "第四名", "第五名", "第六名"],
+        tooltipsString: function(description, value, maxVlaue) {
+            return "排名：" + description + "<br>" + "分数：" + value + "<br>" + "最高分： " + maxVlaue;
+        }
+    },
+    config: {
+        scale: 0.6,
+        dataFill: {
+            fillStyle: "#6fb08a"
+        }
+    }
+});
 </script>
 
 
 <!-- 代码高亮 -->
-<link rel="stylesheet" href="http://www.dengzhr.com/wp-content/themes/dengzhr/css/monokai_sublime.css">
-<script src="http://www.dengzhr.com/wp-content/themes/dengzhr/js/highlight.pack.js"></script>
-<script>hljs.initHighlightingOnLoad();</script>
+<!-- <link rel="stylesheet" href="http://www.dengzhr.com/wp-content/themes/dengzhr/css/monokai_sublime.css"> -->
+<!-- <script src="http://www.dengzhr.com/wp-content/themes/dengzhr/js/highlight.pack.js"></script> -->
+<!-- <script>hljs.initHighlightingOnLoad();</script> -->
 </body>
 </html>
