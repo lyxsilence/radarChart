@@ -16,7 +16,7 @@
             showTooltip:  {[Boolean]}  // 是否显示气泡框。默认为false，显示气泡框。
             radius:  {{Int}}  // 雷达图的半径。默认值为雷达图元素最短边一半的0.6倍
             origin:  {{Array}}  // 中心位置[x, y]。默认值为构建元素的中心位置
-            scale: {{Float}} // 雷达图的放大倍数。取值范围为0~1。
+            scale: {{Float}} // 雷达图的放大倍数。取值范围为0~1
 
             // 雷达背景图配置
             bg: {  {{Object}}
@@ -178,45 +178,29 @@ function RadarFactory(element, options) {
         // 初始化雷达图元素的基本样式
         element.style.position = "relative";
 
-        // 书写文字
-        drawText({
-            n: baseConfig.n,
-            r: userConfig.radius,
-            data: data.description,
-            origin: userConfig.origin,
-            fontStyle: userConfig.font.fontStyle,
-            fontColor: userConfig.font.fontColor
-        });
+        drawCanvasAnimation();
 
-        // 绘制背景图
-        drawRadarBackground({
-            layer: userConfig.bg.layer,
-            n: baseConfig.n,
-            r: userConfig.radius,
-            origin: userConfig.origin,
-            evenFillStyle: userConfig.bg.evenFillStyle,
-            oddFillStyle: userConfig.bg.oddFillStyle,
-            evenStrokeStyle: userConfig.bg.evenStrokeStyle,
-            oddStrokeStyle: userConfig.bg.oddStrokeStyle
-        });
-        // 绘制数据线条
+/*        // 绘制数据线条
         drawDataLine({
+            dataPoints: dataPointsPosArray,
             strokeStyle: userConfig.dataLine.strokeStyle,
             lineWidth: userConfig.dataLine.lineWidth
         });
 
         // 绘制数据多边形填充
         drawDataFill({
+            dataPoints: dataPointsPosArray,
             fillStyle: userConfig.dataFill.fillStyle
         });
 
         // 绘制数据点圆圈
         drawDataCircle({
+            dataPoints: dataPointsPosArray,
             r: userConfig.dataCircle.r,
             strokeStyle: userConfig.dataCircle.strokeStyle,
             fillStyle: userConfig.dataCircle.fillStyle,
             lineWidth: userConfig.dataCircle.lineWidth
-        });
+        });*/
 
         // 绘制tooltips
         if(userConfig.showTooltip) {
@@ -236,6 +220,69 @@ function RadarFactory(element, options) {
                 dataCircleRadius: userConfig.tooltip.r
             });
         }
+    };
+
+    function drawCanvasAnimation() {
+        var radiusPrecent = 0;
+        var timer = null;
+        (function drawFrame() {
+            timer = window.requestAnimationFrame(drawFrame, canvas);
+            // 数据点坐标元素 userConfig.radius
+            radiusPrecent += 0.05;
+            if(radiusPrecent >= 1) {
+                window.cancelAnimationFrame(timer);
+            }
+            var dataRadius = baseConfig.dataRadius.map(function(value, index) {
+                return value * radiusPrecent;
+            });
+            var dataPointsPosArray = getDataPointsPos(baseConfig.n, userConfig.radius, dataRadius, baseConfig.angleArr);
+            // 清空画布
+            context.clearRect(0, 0, canvas.width, canvas.height);
+            // 书写文字
+            drawText({
+                n: baseConfig.n,
+                r: userConfig.radius,
+                data: data.description,
+                origin: userConfig.origin,
+                fontStyle: userConfig.font.fontStyle,
+                fontColor: userConfig.font.fontColor
+            });
+
+            // 绘制背景图
+            drawRadarBackground({
+                layer: userConfig.bg.layer,
+                n: baseConfig.n,
+                r: userConfig.radius,
+                origin: userConfig.origin,
+                evenFillStyle: userConfig.bg.evenFillStyle,
+                oddFillStyle: userConfig.bg.oddFillStyle,
+                evenStrokeStyle: userConfig.bg.evenStrokeStyle,
+                oddStrokeStyle: userConfig.bg.oddStrokeStyle
+            });
+
+            // 绘制数据多边形
+            var dataLineOptions = {
+                    dataPoints: dataPointsPosArray,
+                    strokeStyle: userConfig.dataLine.strokeStyle,
+                    lineWidth: userConfig.dataLine.lineWidth
+                },
+                dataFillOptions = {
+                    dataPoints: dataPointsPosArray,
+                    fillStyle: userConfig.dataFill.fillStyle
+                },
+                dataCircleOptions = {
+                    dataPoints: dataPointsPosArray,
+                    r: userConfig.dataCircle.r,
+                    strokeStyle: userConfig.dataCircle.strokeStyle,
+                    fillStyle: userConfig.dataCircle.fillStyle,
+                    lineWidth: userConfig.dataCircle.lineWidth
+                };
+            drawDataPoly({
+                dataLineOptions: dataLineOptions,
+                dataFillOptions: dataFillOptions,
+                dataCircleOptions: dataCircleOptions
+            });
+        })();
     }
 
     // 获取正多边形每个点的坐标位置数组（相对于坐标）
@@ -283,16 +330,36 @@ function RadarFactory(element, options) {
     }
 
     /**
+    * 绘制数据点组成的图案
+    * dataLineOptions
+    * dataFillOptions
+    * dataCircleOptions
+    */
+    function drawDataPoly(options) {
+        var dataLineOptions = options.dataLineOptions || {},
+            dataFillOptions = options.dataFillOptions || {},
+            dataCircleOptions = options.dataCircleOptions || {};
+        // 绘制数据点连接线条
+        drawDataLine(dataLineOptions);
+        // 绘制数据多边形填充
+        drawDataFill(dataFillOptions);
+        // 绘制数据点圆圈
+        drawDataCircle(dataCircleOptions);
+    }
+
+    /**
      * 绘制数据点连接线条
      * options对象的属性如下：
+     * dataPoints: 数据的位置数组
      * strokeStyle: 线条样式
      * lineWidth: 线条宽度
      */
     function drawDataLine(options) {
         var strokeStyle = options.strokeStyle ? options.strokeStyle : "red",
-            lineWidth = options.lineWidth ? options.lineWidth : 2;
-        // 数据点坐标数组
-        var dataPointsPosArray = getDataPointsPos(baseConfig.n, userConfig.radius, baseConfig.dataRadius, baseConfig.angleArr);
+            lineWidth = options.lineWidth ? options.lineWidth : 2,
+            dataPointsPosArray = options.dataPoints ? options.dataPoints : [];
+
+        dataPointsPosArrayLen = dataPointsPosArray.length;
         dataPointsPosArrayLen = dataPointsPosArray.length;
 
         context.save();
@@ -314,12 +381,13 @@ function RadarFactory(element, options) {
     /**
      * 绘制数据多边形填充
      * options对象的属性如下：
+     * dataPoints: 数据的位置数组
      * fillStyle: 填充样式
      */
     function drawDataFill(options) {
-        var fillStyle = options.fillStyle ? options.fillStyle : "transparent";
-        // 数据点坐标数组
-        var dataPointsPosArray = getDataPointsPos(baseConfig.n, userConfig.radius, baseConfig.dataRadius, baseConfig.angleArr);
+        var fillStyle = options.fillStyle ? options.fillStyle : "transparent",
+            dataPointsPosArray = options.dataPoints ? options.dataPoints : [];
+
         dataPointsPosArrayLen = dataPointsPosArray.length;
 
         context.save();
@@ -338,6 +406,7 @@ function RadarFactory(element, options) {
     /**
      * 绘制数据点圆圈
      * 参数options对象的属性如下：
+     * dataPoints: 数据的位置数组
      * r: 圆圈半径
      * strokeStyle: 圆的描边样式
      * fillStyle: 圆的描边宽度
@@ -347,9 +416,9 @@ function RadarFactory(element, options) {
         var r = options.r ? options.r : 3,
             strokeStyle = options.strokeStyle ? options.strokeStyle : "#000",
             lineWidth = options.lineWidth ? options.lineWidth : 2,
-            fillStyle = options.fillStyle ? options.fillStyle : "#222";
+            fillStyle = options.fillStyle ? options.fillStyle : "#222",
+            dataPointsPosArray = options.dataPoints ? options.dataPoints : [];
 
-        var dataPointsPosArray = getDataPointsPos(baseConfig.n, userConfig.radius, baseConfig.dataRadius, baseConfig.angleArr);
         dataPointsPosArrayLen = dataPointsPosArray.length;
 
         for(var i = 0; i < dataPointsPosArrayLen; i++) {
