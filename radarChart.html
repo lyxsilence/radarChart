@@ -221,11 +221,11 @@ radarChart.init(document.querySelector("#radar4"), {
 radarChart.init(document.querySelector("#radar0"), {
     data: {
         maxValue: [100, 100, 100, 100, 100],
-        value: [80, 50, 30, 50, 100],
+        value: [100, 80, 70, 50, 100],
         description: ["JavaScript", "Java", "CSS", "Python", "Three.js"]
     },
     config: {
-        scale: 0.5,
+        scale: 0.8,
         dataFill: {
             fillStyle: "rgba(24, 236, 111, .4)"
         },
@@ -259,7 +259,7 @@ radarChart.init(document.querySelector("#radar1"), {
         description: ["JavaScript", "Java", "CSS", "Python", "Three.js", "Canvas"]
     },
     config: {
-        scale: 0.5,
+        scale: 0.8,
         dataFill: {
             fillStyle: "rgba(24, 236, 111, .4)"
         },
@@ -293,18 +293,17 @@ radarChart.init(document.querySelector("#radar2"), {
         description: ["苹果", "香蕉", "番茄", "樱桃", "番石榴", "水蜜桃", "梨子"]
     },
     config: {
-        showTooltip: false,
         scale: 1,
         showTooltip: true,
         dataLine: {
             strokeStyle: "yellow",
-            lineWidth: 3
+            lineWidth: 2
         },
         dataCircle: {
-            r: 7,
+            r: 4,
             strokeStyle: "yellow",
             fillStyle: "#eee",
-            lineWidth: 7
+            lineWidth: 4
         },
         bg: {
             layer: 9,
