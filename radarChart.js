@@ -110,7 +110,7 @@ function RadarFactory(element, options) {
             origin: [canvas.width / 2, canvas.height / 2],
             showTooltip: false
         }, options.config);
-        var defaultRadius = Math.min(canvas.width, canvas.height) * 0.25 * 0.6 * userConfig.scale * ratio; // 正多边形的默认半径
+        var defaultRadius = Math.min(canvas.width, canvas.height) * 0.5 * 0.6 * userConfig.scale; // 正多边形的默认半径
         userConfig.radius = userConfig.radius ? userConfig.radius : defaultRadius,
 
         // 背景图的config设置默认参数
