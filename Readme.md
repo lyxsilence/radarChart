@@ -1,6 +1,5 @@
-项目地址： [https://github.com/dengzhirong/radarChart][1]
 
-Demo展示地址： [https://dengzhirong.github.io/radarChart/radarChart.html][2]
+Demo展示地址： [https://lyxsilence.github.io/radarChart/radarChart.html][2]
 
 ## 一. 使用方法：
 
